@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+
 app.use(cors())
 app.use(express.json())
 
@@ -26,39 +27,33 @@ let notes = [
   }
 ]
 
+
 const generateId = () => {
   const notesIds = notes.map(n => n.id)
   const maxId = notesIds.length ? Math.max(...notesIds) : 0
   const newId = maxId + 1
   return newId
 }
-
 app.get('/', (request, response) => {
   response.send('<h1>Hi! Usuario</h1>')
 })
-
 app.get('/api/notes', (request, response) => {
   response.json(notes)
 })
-
 app.get('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id)
   const note = notes.find(note => note.id === id)
-
   if (note) {
     return response.json(note)
   } else {
     response.status(404).end()
   }
 })
-
 app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id)
   notes = notes.filter(note => note.id !== id)
-
   response.status(204).end()
 })
-
 app.post('/api/notes', (request, response) => {
   const note = request.body
 
@@ -67,19 +62,15 @@ app.post('/api/notes', (request, response) => {
       error: 'Hay un error no se cual es pero es un error perdido XD, field is missing '
     })
   }
-
   const newNote = {
     id: generateId(),
     content: note.content,
     date: new Date(),
     import: note.important || false
   }
-
   notes = notes.concat(newNote)
-
   response.json(note)
 })
-
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Este servidor se esta corriendo en este puerto ${PORT}`)
